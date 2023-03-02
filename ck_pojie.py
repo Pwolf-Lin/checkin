@@ -4,8 +4,7 @@ cron: 53 11 * * *
 new Env('吾爱破解');
 """
 
-import requests,os,sys
-import urllib.parse
+import requests
 from bs4 import BeautifulSoup
 
 from notify_mtr import send
@@ -18,55 +17,30 @@ class Pojie:
 
     @staticmethod
     def sign(cookie):
-        url1 = "https://www.52pojie.cn/CSPDREL2hvbWUucGhwP21vZD10YXNrJmRvPWRyYXcmaWQ9Mg==?wzwscspd=MC4wLjAuMA=="
-        url2 = 'https://www.52pojie.cn/home.php?mod=task&do=apply&id=2&referer=%2F'
-        url3 = 'https://www.52pojie.cn/home.php?mod=task&do=draw&id=2'
-        cookie = urllib.parse.unquote(cookie)
-        cookie_list = cookie.split(";")
-        cookie = ''
-        for i in cookie_list:
-            key = i.split("=")[0]
-            if "htVC_2132_saltkey" in key:
-                cookie += "htVC_2132_saltkey=" + urllib.parse.quote(i.split("=")[1]) + "; "
-            if "htVC_2132_auth" in key:
-                cookie += "htVC_2132_auth=" + urllib.parse.quote(i.split("=")[1]) + ";"
-            if not ('htVC_2132_saltkey' in cookie or 'htVC_2132_auth' in cookie):
-                print("cookie中未包含htVC_2132_saltkey或htVC_2132_auth字段，请检查cookie")
-                sys.exit()
+        result = ""
         headers = {
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Accept-Language": "zh-CN,zh;q=0.9",
-            "Cache-Control": "no-cache",
-            "Connection": "keep-alive",
             "Cookie": cookie,
-            "User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.57'
+            "ContentType": "text/html;charset=gbk",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
         }
-        res1 = requests.get(url1, headers=headers, allow_redirects=False)
-        s_cookie = res1.headers['Set-Cookie']
-        cookie = cookie + s_cookie
-        headers['Cookie'] = cookie
-        res2 = requests.get(url2, headers=headers, allow_redirects=False)
-        s_cookie = res2.headers['Set-Cookie']
-        cookie = cookie + s_cookie
-        headers['Cookie'] = cookie
-        res3 = requests.get(url3, headers=headers)
-        r_data = BeautifulSoup(res3.text, "html.parser")
-        jx_data = r_data.find("div", id="messagetext").find("p").text
-        if "您需要先登录才能继续本操作" in jx_data:
-            print(f"Cookie 失效")
-            msg = f"Cookie 失效"
-        elif "恭喜" in jx_data:
-            print(f"签到成功")
-            msg = f"签到成功"
-        elif "不是进行中的任务" in jx_data:
-            print(f"今日已签到")
-            msg = f"今日已签到"
+        requests.session().put(
+            "https://www.52pojie.cn/home.php?mod=task&do=apply&id=2", headers=headers
+        )
+        fa = requests.session().put(
+            "https://www.52pojie.cn/home.php?mod=task&do=draw&id=2", headers=headers
+        )
+        fb = BeautifulSoup(fa.text, "html.parser")
+        fc = fb.find("div", id="messagetext").find("p").text
+        if "您需要先登录才能继续本操作" in fc:
+            result += "Cookie 失效"
+        elif "恭喜" in fc:
+            result += "签到成功"
+        elif "不是进行中的任务" in fc:
+            result += "不是进行中的任务"
         else:
-            print(f"签到失败")
-            msg = f"签到失败"
-        return msg
-    
+            result += "签到失败"
+        return result
+
     def main(self):
         i = 1
         msg_all = ""
