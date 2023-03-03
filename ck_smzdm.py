@@ -27,7 +27,7 @@ class Smzdm:
                 'Host': 'user-api.smzdm.com',
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Cookie': f'{cookie}',
-                'User-Agent': 'smzdm_android_V10.4.1 rv:841 (22021211RC;Android12;zh)smzdmapp',
+                'User-Agent': 'smzdm_android_V10.4.26 rv:866 (HUAWEI NXT-AL10;Android8.0.0;zh)smzdmapp',
             }
             data = {
                 "f": "android",
@@ -51,28 +51,41 @@ class Smzdm:
                 "sign": hashlib.md5(bytes(f'f=android&sk=ierkM0OZZbsuBKLoAgQ6OJneLMXBQXmzX+LXkNTuKch8Ui2jGlahuFyWIzBiDq/L&time={Timestamp}&token={token}&v=10.4.1&weixin=1&key=apr1$AwP!wRRT$gJ/q.X24poeBInlUJC', encoding='utf-8')).hexdigest().upper()
             }
             url = 'https://user-api.smzdm.com/checkin'
-            url2 = 'https://user-api.smzdm.com/checkin/all_reward'
             headers = {
                 'Host': 'user-api.smzdm.com',
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Cookie': f'{cookie}',
-                'User-Agent': 'smzdm_android_V10.4.1 rv:841 (22021211RC;Android12;zh)smzdmapp',
+                'User-Agent': 'smzdm_android_V10.4.26 rv:866 (HUAWEI NXT-AL10;Android8.0.0;zh)smzdmapp',
             }
             html = requests.post(url=url, headers=headers, data=data)
-            html2 = requests.post(url=url2, headers=headers, data=data)
             res = json.loads(html.text)
-            res2 = json.loads(html2.text)
-            if res2['error_code'] == '0':
-                msg = res2["title"] + res2["sub_title"]
+            Smzdm.reward(headers)
+            if res['error_code'] == '0':
+                msg = '已连续签到' + res['data']['daily_num'] +'天'
             else:
                 msg = res['error_msg']
         except Exception as e:
             msg = f"签到状态: 签到失败\n错误信息: {e}，请重新获取 cookie"
         return msg
+    
+    @staticmethod
+    def reward(headers):
+        Timestamp = int(round(time.time() * 1000))
+        data = {
+            "f": "android",
+            "v": "10.4.1",
+            "weixin": 1,
+            "time": Timestamp,
+            "sign": hashlib.md5(bytes(f'f=android&time={Timestamp}&v=10.4.1&weixin=1&key=apr1$AwP!wRRT$gJ/q.X24poeBInlUJC', encoding='utf-8')).hexdigest().upper()
+        }
+        url = 'https://user-api.smzdm.com/checkin/all_reward'
+        html = requests.post(url=url, headers=headers, data=data)
+        # res = json.loads(html.text)
+        # return res
+
 
     def main(self):
         msg_all = ""
-
         for check_item in self.check_items:
             msg = self.sign(check_item.get("cookie"))
             msg_all += msg + "\n\n"
