@@ -94,6 +94,6 @@ class Smzdm:
 
 if __name__ == "__main__":
     _data = get_data()
-    _check_items = _data.get("SMZDM", [])
+    _check_items = _data.get("SMZDM_APP", [])
     result = Smzdm(check_items=_check_items).main()
     send("什么值得买APP", result)

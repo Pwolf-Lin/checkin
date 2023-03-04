@@ -62,10 +62,12 @@ ezr-st = "  "
 ezr-ss = "  "
 ezr-userid = "  "
 
-# 什么值得买
-# https://www.smzdm.com cookie
+# 什么值得买【网页端及APP】
+# https://user-api.smzdm.com/robot/token cookie
 [[SMZDM]]
-cookie = "sess=xxxxxx;"
+cookie = " "
+[[SMZDM_APP]]
+cookie = " "
 
 # 微博【APP】
 # 微博 APP 抓取开头为 https://api.weibo.cn/2/users/show? 的整个 url 填入即可,cookie抓网页和app均可 https://luck.sc.weibo.com/aj/jifen/info
