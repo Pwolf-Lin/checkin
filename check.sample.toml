@@ -44,6 +44,12 @@ Token = ""
 password = ""
 phone = ""
 
+#洽洽会员【小程序】
+#抓取 vip.qiaqiafood.com 请求中的Authorization
+[[qiaqia]]
+Authorization = ""
+uid = ""
+
 #RIO鸡尾酒【小程序】
 #RIO鸡尾酒 小程序抓取 https://club.rioalc.com/api/miniprogram/user-info 查看headers中Authorization
 [[RIO]]
