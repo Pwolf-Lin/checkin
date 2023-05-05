@@ -75,6 +75,11 @@ cookie = " "
 [[SMZDM_APP]]
 cookie = " "
 
+# 在线工具【WEB】
+# https://id.tool.lu/sign cookie
+[[TOOLU]]
+cookie = "uuid=xxxxxx; _access=xxxxxx; XSRF-TOKEN=xxxxxx;"
+
 # 微博【APP】
 # 微博 APP 抓取开头为 https://api.weibo.cn/2/users/show? 的整个 url 填入即可,cookie抓网页和app均可 https://luck.sc.weibo.com/aj/jifen/info
 [[WEIBO]]
